@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
+import ClientProvider from '../components/ClientProvider'
 
 export const metadata = {
   title: 'Next.js',
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className='flex bg-[#F7FBFF] h-screen'>
+        <ClientProvider>
         {/*SideBar*/}
         <Sidebar/>
         <main className='p-10 max-w-7xl w-full mx-auto overflow-y-auto'>
@@ -22,7 +24,7 @@ export default function RootLayout({
           <Header/>
            {children}
         </main>
-       
+        </ClientProvider>
       </body>
     </html>
   )

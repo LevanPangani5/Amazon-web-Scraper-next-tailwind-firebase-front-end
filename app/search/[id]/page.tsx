@@ -1,8 +1,10 @@
 'use clinet'
-import { doc } from 'firebase/firestore'
+import { deleteDoc, doc } from 'firebase/firestore'
 import {useDocument} from 'react-firebase-hooks/firestore'
 import {db} from '../../../firebase'
 import Results from '../../../components/Results'
+import Spinner from 'react-spinkit'
+import { useRouter } from 'next/navigation'
 
 type Props={
     params:{
@@ -12,6 +14,23 @@ type Props={
 
 function SearchPage({params:{id}}:Props) {
     const [snapshot, loading, error] =useDocument(doc(db,'searches',id))
+    const router= useRouter()
+
+    const handleDelete = ()=>{
+      deleteDoc(doc(db,'searches',id))
+      router.push('/')
+    }
+
+    const deleteButton =(
+      <button 
+      className='bg-indigo-600 text-white px-4 
+      rounded-lg'
+      onClick={handleDelete}
+      >
+        Delete Search
+      </button>
+    )
+    
     if(loading)return(
  <h1 className='text-center p-10 animate-pulstext-xl text-indigo-600/50'>
     Loading Results...
@@ -26,6 +45,17 @@ if(snapshot?.data()?.status === 'pending'){
       <p className='text-indigo-600 animate-pulse text-center'>
         Scraping results from Amazon ...
       </p>
+
+      <Spinner 
+      style={{
+        height:'100px',
+        width:'100px',
+    }}
+    name='cube-grid'
+    fadeIn='none'
+    color='indogo'/>
+
+    {deleteButton}
     </div>
 }
 
@@ -43,6 +73,7 @@ if(snapshot?.data()?.status === 'pending'){
               `${snapshot.data()?.results?.length} results found`}
             </p>
         </div>
+        {deleteButton}
       </div>
 
        {snapshot.data()?.reslults?.length > 0 && (
